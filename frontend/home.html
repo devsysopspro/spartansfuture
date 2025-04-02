@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Spartan's Future</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        header {
+            background-color: #54585A;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            text-align: center;
+            padding: 10px;
+            background-color: #28B463;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: auto;
+            flex: 1;
+            text-align: center;
+        }
+
+        .content h2 {
+            color: #28B463;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-right: 10px;
+            color: white;
+            background-color: #00c244;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: #008f36;
+        }
+
+        .image-slider {
+            width: 100%;
+            overflow: hidden;
+            background-color: #e9ecef;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+
+        .slider-track {
+            display: flex;
+            width: calc(300px * 12);
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .slider-track img {
+            width: 50px;
+            height: 25px;
+            object-fit: cover;
+            margin: 0 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .slider-track img:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #000000;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #28B463;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer p {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .extra-section {
+            background-color: #f9f9f9;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .extra-section h3 {
+            color: #28B463;
+            margin-bottom: 20px;
+        }
+
+        .extra-section p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .impact-section {
+            background-color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .impact-section h3 {
+            color: #28B463;
+            margin-bottom: 20px;
+        }
+
+        .impact-section p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .impact-section ul {
+            list-style-type: none;
+            padding: 0;
+            color: #555;
+            font-size: 16px;
+        }
+
+        .impact-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .profile-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .profile-slide {
+            display: none;
+        }
+
+        .profile-slide.active {
+            display: block;
+        }
+
+        .profile-slide img {
+            width: 50%;
+            border-radius: 8px;
+        }
+
+        .profile-info {
+            text-align: left;
+            padding: 10px;
+        }
+
+        .donate-btn {
+            background: #28B463;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .donate-btn:hover {
+            background: #1E8449;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .nav-buttons button {
+            padding: 10px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-buttons button:hover {
+            background: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>A Spartan's Future</h1>
+        <p>Empowering NSU students through secure fundraising and mentorship</p>
+    </header>
+
+    <nav>
+        <a href="login.html">Login</a>
+        <a href="about.html">About</a>
+    </nav>
+    
+    <div class="content">
+    <h2>Welcome to A Spartan's Future</h2>
+    <p>
+        This initiative is designed to empower NSU students with secure fundraising opportunities 
+        while fostering connections with alumni through mentorship and gamified career fairs.
+    </p>
+</div>
+    <h2>Swipe Through Student Profiles</h2>
+
+    <div class="profile-container">
+        <div id="profileSlides"></div>
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Previous</button>
+            <button onclick="nextSlide()">Next</button>
+        </div>
+    </div>
+
+    <div class="content">
+       
+        
+        <!-- Call-to-Action Buttons -->
+        <div class="btn btn-donate" onclick="window.location.href='donate.html';">Donate</div>
+        <a href="mentorship.html" class="btn btn-mentorship">Mentorship Portal</a>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 A Spartan's Future | Norfolk State University</p>
+    </footer>
+
+    <script>
+ document.addEventListener("DOMContentLoaded", () => {
+    fetchStudents();
+});
+
+let currentIndex = 0;
+let students = [];
+
+async function fetchStudents() {
+    try {
+        const response = await fetch('/api/students'); // Updated endpoint
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        students = await response.json();
+        
+        if (students.length === 0) {
+            showNoStudentsMessage();
+        } else {
+            showProfiles();
+        }
+    } catch (error) {
+        console.error("Error fetching students:", error);
+        showErrorMessage("Failed to load student profiles. Please try again later.");
+    }
+}
+
+function showProfiles() {
+    const container = document.getElementById("profileSlides");
+    container.innerHTML = "";
+
+    students.forEach((student, index) => {
+        const slide = document.createElement("div");
+        slide.className = `profile-slide ${index === currentIndex ? 'active' : ''}`;
+        
+        slide.innerHTML = `
+            <img src="${student.profileImage || '/imanges/nopic.png'}" 
+                 alt="${student.name || 'NSU Student'}"
+                 onerror="this.src='/imanges/nopic.png'">
+            <div class="profile-info">
+                <h3>${student.name || 'NSU Student'}</h3>
+                <p>${formatInterests(student.interests)}</p>
+                <button class="donate-btn" onclick="viewProfile('${student._id}')">
+                    View Profile
+                </button>
+            </div>
+        `;
+        container.appendChild(slide);
+    });
+}
+
+// Helper functions
+function formatInterests(interests) {
+    if (!interests) return "Interests not specified";
+    if (Array.isArray(interests)) return interests.join(", ");
+    return interests;
+}
+
+function viewProfile(studentId) {
+    window.location.href = `student-profile.html?id=${studentId}`;
+}
+
+function nextSlide() {
+    currentIndex = (currentIndex + 1) % students.length;
+    showProfiles();
+}
+
+function prevSlide() {
+    currentIndex = (currentIndex - 1 + students.length) % students.length;
+    showProfiles();
+}
+
+    </script>
+</body>
+</html>

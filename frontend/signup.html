@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            background-image: url('tower.jpg');
+            background-size: 110%;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        header {
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #45a049;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"], select {
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 1.5rem;
+            padding: 0.7rem;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .info {
+            text-align: center;
+            margin-top: 2rem;
+            color: black;
+        }
+
+        #logo {
+            width: 100px;
+        }
+
+        .info span {
+            display: block;
+            margin-top: 0.5rem;
+        }
+        .profile-picture-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-top: 10px;
+            display: none; /* Initially hidden */
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <img id="logo" src="nsulogo.png" alt="Logo">
+        <h1>Welcome to Our Mentorship Platform</h1>
+    </header>
+    
+    <div class="container">
+        <h1>Sign Up</h1>
+        <form id="signUpForm" onsubmit="handleSignUp(event)">
+            <label for="role">I want to sign up as:</label>
+            <select id="role" name="role" required>
+                <option value="">-- Select --</option>
+                <option value="student">Student</option>
+                <option value="mentor">Alumni</option>
+            </select>
+
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="profile_picture">Profile Picture:</label>
+            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewProfilePicture(this)">
+            <img id="profilePicturePreview" class="profile-picture-preview" src="#" alt="Profile Picture Preview">
+            <p class="text-gray-600 text-xs mt-1">Accepts JPG, PNG, and GIF files.</p>
+
+            <label for="cashtag">Cashtag:</label>
+            <input type="text" id="cashtag" name="cashtag" placeholder="$your_cashtag">
+
+            <label for="interests">Interests and Goals:</label>
+            <input type="text" id="interests" name="interests" placeholder="E.g., Career growth, coding, public speaking">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+
+    <div class="info">
+        <h2>How It Works</h2>
+        <span>1. Sign up as a student or mentor</span>
+        <span>2. Match with mentors/alumni based on interests and goals</span>
+        <span>3. Engage in one-on-one mentorship sessions</span>
+    </div>
+
+    <script>
+    async function handleSignUp(event) {
+        event.preventDefault();
+        console.log("Signup form submitted"); // Debug log
+    
+        // Show loading state
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing Up...';
+    
+        try {
+            // Create FormData from the form element directly (more reliable)
+            const formData = new FormData(document.getElementById('signUpForm'));
+        
+            // Debug: Log form data being sent
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value instanceof File ? value.name : value);
+            }
+
+            const response = await fetch('http://localhost:5000/api/auth/signup', {
+                method: 'POST',
+                body: formData
+                // Note: Don't set Content-Type header for FormData - browser does it automatically
+            });
+
+            console.log("Response status:", response.status); // Debug log
+        
+            const data = await response.json();
+            console.log("Response data:", data); // Debug log
+
+            if (!response.ok) {
+                // Handle field-specific errors if available
+                if (data.field && data.message) {
+                    const fieldElement = document.getElementById(data.field);
+                    if (fieldElement) {
+                        fieldElement.focus();
+                        fieldElement.style.borderColor = 'red';
+                    }
+                    throw new Error(data.message);
+                }
+                throw new Error(data.message || 'Registration failed with status ' + response.status);
+            }
+
+            // Success case
+            alert('Registration successful! You will be redirected to login.');
+            window.location.href = 'login.html';
+        
+        } catch (error) {
+            console.error('Registration error:', error);
+        
+            // Show detailed error message
+            alert(`Error: ${error.message}\n\nPlease check your information and try again.`);
+        
+            // Highlight problematic fields
+            if (error.message.includes('email')) {
+                document.getElementById('email').style.borderColor = 'red';
+            }
+            if (error.message.includes('username')) {
+                document.getElementById('username').style.borderColor = 'red';
+            }
+        } finally {
+            // Reset button state
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Sign Up';
+        }
+    }
+
+    function previewProfilePicture(input) {
+        const preview = document.getElementById('profilePicturePreview');
+        const file = input.files[0];
+    
+        if (file) {
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please select a valid image file (JPEG, PNG, or GIF)');
+                input.value = '';
+                preview.style.display = 'none';
+                return;
+            }
+        
+            // Validate file size (e.g., 2MB max)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Image must be less than 2MB');
+                input.value = '';
+                preview.style.display = 'none';
+                return;
+            }
+        
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "#";
+            preview.style.display = 'none';
+        }
+    }
+
+    // Add input event listeners to remove error highlighting when user types
+    document.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('input', () => {
+            input.style.borderColor = '#ccc'; // Reset to default
+        });
+    });
+    </script>
+</body>
+</html>
