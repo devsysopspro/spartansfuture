@@ -95,29 +95,95 @@
 
     <div class="container">
         <p>Welcome, <span id="mentorName">Mentor</span>! Here are your current tasks and students:</p>
-
+        
         <h2>Tasks</h2>
         <ul id="taskList">
-            <li>Review student goals <button onclick="completeTask(this)">Complete</button></li>
-            <li>Prepare for next session with John Doe <button onclick="completeTask(this)">Complete</button></li>
-            <li>Respond to new mentorship requests <button onclick="completeTask(this)">Complete</button></li>
+            <!-- Will be populated dynamically -->
         </ul>
 
         <h2>Students</h2>
         <ul id="studentList">
-            <li>John Doe - Goal: Improve coding skills</li>
-            <li>Jane Smith - Goal: Enhance public speaking</li>
+            <!-- Will be populated dynamically -->
         </ul>
 
-        <button onclick="alert('Starting mentorship session...')">Start a Session</button>
+        <button id="startSessionBtn">Start a Session</button>
 
         <div class="student-list">
-            <h2>New Student Sign-ups</h2>
-            <ul id="newStudents">
-                <li>Michael Lee - Goal: Learn JavaScript <button onclick="addStudent('Michael Lee')">Add</button></li>
-                <li>Sara Connor - Goal: Improve public speaking <button onclick="addStudent('Sara Connor')">Add</button></li>
+            <h2>New Mentorship Requests</h2>
+            <ul id="requestList">
+                <!-- Will be populated dynamically -->
             </ul>
         </div>
     </div>
+    <script type="module">
+        import { userService, mentorshipService } from './src/services/api.js';
+      
+        // DOM Elements
+        const mentorNameEl = document.getElementById('mentorName');
+        const studentListEl = document.getElementById('studentList');
+        const requestListEl = document.getElementById('requestList');
+        const startSessionBtn = document.getElementById('startSessionBtn');
+      
+        // Load mentor data
+        async function loadDashboard() {
+          try {
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            
+            // Verify this is a mentor
+            if (!currentUser || currentUser.role !== 'mentor') {
+              window.location.href = 'login.html';
+              return;
+            }
+      
+            // Set mentor name
+            mentorNameEl.textContent = currentUser.name;
+      
+            // Load assigned students
+            const students = await mentorshipService.getAssignedStudents(currentUser._id);
+            studentListEl.innerHTML = students.map(student => `
+              <li>
+                ${student.name} - Interests: ${student.interests.join(', ')}
+                <button onclick="viewStudent('${student._id}')">View</button>
+              </li>
+            `).join('');
+      
+            // Load pending requests
+            const requests = await mentorshipService.getPendingRequests(currentUser._id);
+            requestListEl.innerHTML = requests.map(request => `
+              <li>
+                ${request.studentName} - ${request.message || 'No message'}
+                <button onclick="acceptRequest('${request._id}')">Accept</button>
+                <button onclick="rejectRequest('${request._id}')">Reject</button>
+              </li>
+            `).join('');
+      
+          } catch (error) {
+            console.error('Dashboard error:', error);
+            alert('Failed to load dashboard data');
+          }
+        }
+      
+        // Button handlers
+        window.viewStudent = (studentId) => {
+          window.location.href = `view.html?id=${studentId}`;
+        };
+      
+        window.acceptRequest = async (requestId) => {
+          await mentorshipService.acceptRequest(requestId);
+          loadDashboard(); // Refresh data
+        };
+      
+        window.rejectRequest = async (requestId) => {
+          await mentorshipService.rejectRequest(requestId);
+          loadDashboard(); // Refresh data
+        };
+      
+        startSessionBtn.addEventListener('click', () => {
+          alert('Mentorship session started! (This would launch your video chat service)');
+        });
+      
+        // Initial load
+        loadDashboard();
+      </script>
 </body>
 </html>

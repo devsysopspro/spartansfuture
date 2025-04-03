@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-image: url('tower.jpg');
+            background-image: url('images/tower.jpg');
             background-size: 110%;
             background-attachment: fixed;
             background-repeat: no-repeat;
@@ -108,7 +108,7 @@
 <body>
 
     <header>
-        <img id="logo" src="nsulogo.png" alt="Logo">
+        <img id="logo" src="images/nsulogo.png" alt="Logo">
         <h1 class="centered-text">A Spartan's Future</h1>
     </header>
 
@@ -126,72 +126,24 @@
             <button type="button" class="guest-button" onclick="continueAsGuest()">Continue as Guest</button>
         </div>
     </form>
-<script>
-    // Update your frontend login handler:
-    async function handleLogin(event) {
-        event.preventDefault();
-  
-        try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
-             method: 'POST',
-             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
-            })
-        });
-
-            const data = await response.json();
-    
-            if (!response.ok) {
-                // Show actual error message from backend
-                throw new Error(data.message || 'Login failed');
-            }
-
-            // Store the token
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.userId); // If you return this
-    
-            // Redirect
-            window.location.href = user.role === 'mentor' ? 'mentor.html' : 'student.html';
-    
-        } catch (error) {
-            console.error('Login error:', error);
-            // Show specific error to user
-            alert(error.message); 
-        }
-    }
-    async function forgotPassword() {
-        const email = prompt("Enter your registered email address:");
-        if (!email) {
-            alert("Email is required to reset your password.");
-            return;
-        }
-
-        try {
-            const response = await fetch('/forgot-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
-            });
-
-            const responseData = await response.json();
-            alert(responseData.message);
-        } catch (error) {
-            console.error("Forgot Password error:", error);
-            alert("An error occurred while processing your request. Please try again.");
-        }
-    }
-    function redirectToRegistration() {
-    window.location.href = "signup.html"; // Change to the actual registration page URL
-}
-
-function continueAsGuest() {
-    window.location.href = "home.html"; // Change to the actual guest homepage URL
-}
-
+    <script type="module">
+        import { authService } from './src/services/auth.js';
         
-</script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+      
+          try {
+            const { token, user } = await authService.login(email, password);
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
+            window.location.href = user.role === 'mentor' ? 'mentor.html' : 'student.html';
+          } catch (error) {
+            document.getElementById('error-message').textContent = error.message;
+          }
+        });
+    </script>
 </body>
 
 </html>

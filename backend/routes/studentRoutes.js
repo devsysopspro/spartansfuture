@@ -13,3 +13,4 @@ router.get('/students', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch students' });
     }
   });
+  

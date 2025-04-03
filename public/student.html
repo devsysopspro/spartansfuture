@@ -102,49 +102,18 @@
         <button class="logout-button" onclick="logout()">Logout</button>
     </div>
 
-    <script>
-    document.addEventListener("DOMContentLoaded", async function () {
-        try {
-        // Get student ID from session/localStorage
-            const studentId = localStorage.getItem('userId'); // Or from session
-    
-            const response = await fetch(`http://localhost:5000/api/mentorship/student/${studentId}`);
-            if (!response.ok) throw new Error('Failed to load data');
-    
-            const studentData = await response.json();
-    
-            // Update the DOM with real data
-            document.getElementById("studentName").textContent = studentData.name;
-            document.getElementById("mentorName").textContent = `Name: ${studentData.mentor.name}`;
-            document.getElementById("mentorExpertise").textContent = `Expertise: ${studentData.mentor.expertise}`;
-    
-            // Populate sessions and goals
-            const sessionsList = document.getElementById("sessionsList");
-            sessionsList.innerHTML = studentData.sessions.map(s => `<li>${s}</li>`).join('');
-    
-            const goalsList = document.getElementById("goalsList");
-            goalsList.innerHTML = studentData.goals.map(g => `<li>${g}</li>`).join('');
-    
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to load student data');
+    <script type="module">
+        import { userService } from './src/services/api.js';
+      
+        // Check authentication
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'login.html';
+      
+        // Load mentor data
+        if (user.mentor) {
+          const mentor = await userService.getUser(user.mentor);
+          document.getElementById('mentorName').textContent = mentor.name;
         }
-    });
-
-    // Update logout function
-    async function logout() {
-        try {
-            const response = await fetch('http://localhost:5000/api/auth/logout', {
-                method: 'POST',
-                credentials: 'include' // For cookies/session
-            });
-    
-            localStorage.removeItem('userId');
-             window.location.href = 'login.html';
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
-    }
-    </script>
+      </script>
 </body>
 </html>

@@ -296,78 +296,87 @@
         <p>&copy; 2024 A Spartan's Future | Norfolk State University</p>
     </footer>
 
-    <script>
- document.addEventListener("DOMContentLoaded", () => {
-    fetchStudents();
-});
-
-let currentIndex = 0;
-let students = [];
-
-async function fetchStudents() {
-    try {
-        const response = await fetch('/api/students'); // Updated endpoint
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    <script type="module">
+        import { userService } from './src/services/api.js';
+      
+        // State management
+        let currentProfiles = [];
+        let currentIndex = 0;
+        const profileContainer = document.getElementById("profileSlides");
+      
+        // Main initialization
+        document.addEventListener("DOMContentLoaded", () => {
+          loadProfiles();
+          setupEventListeners();
+        });
+      
+        async function loadProfiles() {
+          try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const roleToFetch = user?.role === 'mentor' ? 'student' : 'mentor';
+            
+            currentProfiles = await userService.getUsersByRole(roleToFetch);
+            
+            if (currentProfiles.length === 0) {
+              showNoStudentsMessage();
+            } else {
+              showCurrentProfile();
+            }
+          } catch (error) {
+            console.error("Profile loading error:", error);
+            showErrorMessage("Failed to load profiles. Please try again.");
+          }
         }
-        students = await response.json();
-        
-        if (students.length === 0) {
-            showNoStudentsMessage();
-        } else {
-            showProfiles();
-        }
-    } catch (error) {
-        console.error("Error fetching students:", error);
-        showErrorMessage("Failed to load student profiles. Please try again later.");
-    }
-}
-
-function showProfiles() {
-    const container = document.getElementById("profileSlides");
-    container.innerHTML = "";
-
-    students.forEach((student, index) => {
-        const slide = document.createElement("div");
-        slide.className = `profile-slide ${index === currentIndex ? 'active' : ''}`;
-        
-        slide.innerHTML = `
-            <img src="${student.profileImage || '/imanges/nopic.png'}" 
-                 alt="${student.name || 'NSU Student'}"
-                 onerror="this.src='/imanges/nopic.png'">
-            <div class="profile-info">
-                <h3>${student.name || 'NSU Student'}</h3>
-                <p>${formatInterests(student.interests)}</p>
-                <button class="donate-btn" onclick="viewProfile('${student._id}')">
-                    View Profile
+      
+        function showCurrentProfile() {
+          const profile = currentProfiles[currentIndex];
+          
+          profileContainer.innerHTML = `
+            <div class="profile-slide active">
+              <img src="${profile.profileImage || './images/nopic.png'}" 
+                   alt="${profile.name || 'NSU Member'}"
+                   onerror="this.src='./images/nopic.png'">
+              <div class="profile-info">
+                <h3>${profile.name || 'NSU Member'}</h3>
+                <p>${formatInterests(profile.interests)}</p>
+                <button class="donate-btn" onclick="viewProfile('${profile._id}')">
+                  ${user?.role === 'mentor' ? 'Donate' : 'View Profile'}
                 </button>
+              </div>
             </div>
-        `;
-        container.appendChild(slide);
-    });
-}
-
-// Helper functions
-function formatInterests(interests) {
-    if (!interests) return "Interests not specified";
-    if (Array.isArray(interests)) return interests.join(", ");
-    return interests;
-}
-
-function viewProfile(studentId) {
-    window.location.href = `student-profile.html?id=${studentId}`;
-}
-
-function nextSlide() {
-    currentIndex = (currentIndex + 1) % students.length;
-    showProfiles();
-}
-
-function prevSlide() {
-    currentIndex = (currentIndex - 1 + students.length) % students.length;
-    showProfiles();
-}
-
-    </script>
+          `;
+        }
+      
+        // HELPER FUNCTIONS (keep all existing ones)
+        function formatInterests(interests) {
+          if (!interests) return "Interests not specified";
+          return Array.isArray(interests) ? interests.join(", ") : interests;
+        }
+      
+        function viewProfile(userId) {
+          window.location.href = `view.html?id=${userId}`;
+        }
+      
+        function nextSlide() {
+          currentIndex = (currentIndex + 1) % currentProfiles.length;
+          showCurrentProfile();
+        }
+      
+        function prevSlide() {
+          currentIndex = (currentIndex - 1 + currentProfiles.length) % currentProfiles.length;
+          showCurrentProfile();
+        }
+      
+        function setupEventListeners() {
+          // Connect existing navigation buttons
+          document.querySelector('.next-btn').addEventListener('click', nextSlide);
+          document.querySelector('.prev-btn').addEventListener('click', prevSlide);
+        }
+      
+        // Make functions available globally
+        window.viewProfile = viewProfile;
+        window.nextSlide = nextSlide;
+        window.prevSlide = prevSlide;
+      </script>
 </body>
 </html>

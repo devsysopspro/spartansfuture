@@ -3,104 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Profile</title>
+    <title>Student Profile | A Spartan's Future</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #1E3A8A;
+            --secondary: #F59E0B;
+            --success: #00C244;
+            --dark: #1F2937;
+            --light: #F3F4F6;
+            --gray: #6B7280;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            text-align: center;
-            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
         }
-
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
+        
+        .profile-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-
-        img {
+        
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .profile-image {
             width: 150px;
             height: 150px;
             border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-role {
+            font-size: 1.1rem;
+            color: var(--gray);
             margin-bottom: 1rem;
         }
-
-        h1 {
-            color: #00c244;
+        
+        .profile-details {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
         }
-
-        p {
-            font-size: 1.1rem;
+        
+        .detail-item {
+            margin-bottom: 1rem;
         }
-
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        
+        .detail-value {
+            color: var(--dark);
+        }
+        
+        .interests-container {
+            margin-bottom: 2rem;
+        }
+        
+        .interests-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .interests-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .interest-tag {
+            background: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-donate {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-contact {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
         .back-btn {
             display: inline-block;
-            padding: 10px 20px;
+            margin-top: 2rem;
+            color: var(--gray);
             text-decoration: none;
-            font-size: 16px;
-            border-radius: 5px;
-            color: white;
-            background-color: #4CAF50;
-            cursor: pointer;
-            margin-top: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-
+        
         .back-btn:hover {
-            background-color: #008f36;
+            color: var(--primary);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <img id="studentImage" src="default-avatar.png" alt="Student Image">
-        <h1 id="studentName">Loading...</h1>
-        <p><strong>Cause:</strong> <span id="studentCause">Loading...</span></p>
-        <a href="home.html" class="back-btn">Back to Homepage</a>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img id="profileImage" src="https://via.placeholder.com/150" alt="Profile Image" class="profile-image">
+            <h1 id="profileName" class="profile-name">Loading...</h1>
+            <p id="profileRole" class="profile-role">Student at Norfolk State University</p>
+        </div>
+        
+        <div class="profile-details">
+            <div class="detail-item">
+                <span class="detail-label">Email</span>
+                <span id="profileEmail" class="detail-value">loading...</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Focus Area</span>
+                <span id="profileFocus" class="detail-value">loading...</span>
+            </div>
+        </div>
+        
+        <div class="interests-container">
+            <h3 class="interests-title">Interests & Goals</h3>
+            <div id="interestsList" class="interests-list">
+                <!-- Interests will be populated here -->
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="donateBtn" class="btn btn-donate">
+                <i class="fas fa-hand-holding-heart"></i> Support
+            </button>
+            <button id="contactBtn" class="btn btn-contact">
+                <i class="fas fa-envelope"></i> Contact
+            </button>
+        </div>
+        
+        <a href="home.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Homepage
+        </a>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get("id"); // Get user ID from URL
     
-            // Get elements by ID
-            const userNameElement = document.getElementById("userName");
-            const userRoleElement = document.getElementById("userRole");
-            const userEmailElement = document.getElementById("userEmail");
-            const userImageElement = document.getElementById("userImage");
+    <div id="toast" class="toast">Email copied to clipboard!</div>
     
-            if (!userId) {
-                userNameElement.textContent = "User not found";
-                return;
-            }
-    
-            try {
-                const response = await fetch("students"); // Fetch user data
-    
-                if (!response.ok) {
-                    throw new Error("User not found");
-                }
-    
-                const user = await response.json();
-    
-                // Ensure user data is present before accessing properties
-                userNameElement.textContent = user?.name || "Unknown User";
-                userRoleElement.textContent = `Role: ${user?.role || "N/A"}`;
-                userEmailElement.textContent = `Email: ${user?.email || "No email available"}`;
-                userImageElement.src = user?.profileImage || "default-avatar.png"; // Default image if none available
-    
-            } catch (error) {
-                console.error("❌ Error fetching user data:", error);
-                userNameElement.textContent = "Error loading user profile";
-            }
-        });
+    <script type="module">
+        import { userService, mentorshipService } from './src/services/api.js';
+      
+        // Get profile ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
+      
+        // Load and display profile data
+        async function loadProfile() {
+          const profile = await userService.getUser(userId);
+          document.getElementById('profileName').textContent = profile.name;
+          // ... (other DOM updates)
+        }
+      
+        // Initial load
+        loadProfile();
     </script>
-    
-    
-
 </body>
 </html>

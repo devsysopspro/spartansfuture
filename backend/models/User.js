@@ -6,9 +6,10 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, required: true, enum: ["student", "mentor"] },
-  interests: { type: String, default: "" },
-  profileImage: {type: String, default:"/images/nopic.png"},
-  cashtag:{type: String, default: "" }
+  interests: [{ type: String }],
+  profileImage: { type: String, default: "/images/nopic.png" },
+  cashtag: { type: String, default: "" },
+  mentor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] 
 }, { timestamps: true });
 
 // Add index for faster queries

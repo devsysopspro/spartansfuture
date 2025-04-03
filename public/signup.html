@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f9;
-            background-image: url('tower.jpg');
+            background-image: url('images/tower.jpg');
             background-size: 110%;
             background-attachment: fixed;
             background-repeat: no-repeat;
@@ -74,7 +74,7 @@
         .info {
             text-align: center;
             margin-top: 2rem;
-            color: black;
+            color: white;
         }
 
         #logo {
@@ -165,7 +165,7 @@
                 console.log(key, value instanceof File ? value.name : value);
             }
 
-            const response = await fetch('http://localhost:5000/api/auth/signup', {
+            const response = await fetch('${process.env.REACT_APP_API_URL}/signup', {
                 method: 'POST',
                 body: formData
                 // Note: Don't set Content-Type header for FormData - browser does it automatically
