@@ -147,71 +147,74 @@
     </div>
 
     <script>
-    async function handleSignUp(event) {
-        event.preventDefault();
-        console.log("Signup form submitted"); // Debug log
-    
-        // Show loading state
-        const submitBtn = event.target.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Signing Up...';
-    
-        try {
-            // Create FormData from the form element directly (more reliable)
-            const formData = new FormData(document.getElementById('signUpForm'));
+  async function handleSignUp(event) {
+    event.preventDefault();
+    console.log("Signup form submitted");
+
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing Up...';
+
+    try {
+        // First try with simple JSON
+        const formData = {
+            role: document.getElementById('role').value,
+            name: document.getElementById('name').value,
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            cashtag: document.getElementById('cashtag').value,
+            interests: document.getElementById('interests').value,
+            password: document.getElementById('password').value
+        };
+
+        const response = await fetch('https://ygqt4vowg9.execute-api.us-east-2.amazonaws.com/default/spartansfuture-backend/api/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        console.log("Response status:", response.status);
         
-            // Debug: Log form data being sent
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value instanceof File ? value.name : value);
-            }
+        const data = await response.json();
+        console.log("Response data:", data);
 
-            const response = await fetch('https://ygqt4vowg9.execute-api.us-east-2.amazonaws.com/default/spartansfuture-backend', {
-                method: 'POST',
-                body: formData
-                // Note: Don't set Content-Type header for FormData - browser does it automatically
-            });
-
-            console.log("Response status:", response.status); // Debug log
-        
-            const data = await response.json();
-            console.log("Response data:", data); // Debug log
-
-            if (!response.ok) {
-                // Handle field-specific errors if available
-                if (data.field && data.message) {
-                    const fieldElement = document.getElementById(data.field);
-                    if (fieldElement) {
-                        fieldElement.focus();
-                        fieldElement.style.borderColor = 'red';
-                    }
-                    throw new Error(data.message);
+        if (!response.ok) {
+            if (data.field && data.message) {
+                const fieldElement = document.getElementById(data.field);
+                if (fieldElement) {
+                    fieldElement.focus();
+                    fieldElement.style.borderColor = 'red';
                 }
-                throw new Error(data.message || 'Registration failed with status ' + response.status);
+                throw new Error(data.message);
             }
+            throw new Error(data.message || 'Registration failed with status ' + response.status);
+        }
 
-            // Success case
-            alert('Registration successful! You will be redirected to login.');
-            window.location.href = 'login.html';
+        alert('Registration successful! You will be redirected to login.');
+        window.location.href = 'login.html';
         
-        } catch (error) {
-            console.error('Registration error:', error);
+    } catch (error) {
+        console.error('Registration error:', error);
         
-            // Show detailed error message
+        if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            alert('Network error: Could not connect to the server. Please check your internet connection and try again.');
+        } else {
             alert(`Error: ${error.message}\n\nPlease check your information and try again.`);
-        
-            // Highlight problematic fields
+            
             if (error.message.includes('email')) {
                 document.getElementById('email').style.borderColor = 'red';
             }
             if (error.message.includes('username')) {
                 document.getElementById('username').style.borderColor = 'red';
             }
-        } finally {
-            // Reset button state
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Sign Up';
         }
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign Up';
     }
+}
 
     function previewProfilePicture(input) {
         const preview = document.getElementById('profilePicturePreview');
