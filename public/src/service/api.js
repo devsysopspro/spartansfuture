@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5000'; // Local development
+const API_BASE = 'https://ygqt4vowg9.execute-api.us-east-2.amazonaws.com/default/spartansfuture-backend'; // Local development
 
 async function fetchAPI(endpoint, method = 'GET', body = null) {
   const options = {
