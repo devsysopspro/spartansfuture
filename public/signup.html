@@ -98,7 +98,7 @@
 </head>
 <body>
     <header>
-        <img id="logo" src="nsulogo.png" alt="Logo">
+        <img id="logo" src="images/nsulogo.png" alt="Logo">
         <h1>Welcome to Our Mentorship Platform</h1>
     </header>
     
@@ -165,7 +165,7 @@
                 console.log(key, value instanceof File ? value.name : value);
             }
 
-            const response = await fetch('${process.env.REACT_APP_API_URL}/signup', {
+            const response = await fetch('https://ygqt4vowg9.execute-api.us-east-2.amazonaws.com/default/spartansfuture-backend', {
                 method: 'POST',
                 body: formData
                 // Note: Don't set Content-Type header for FormData - browser does it automatically
