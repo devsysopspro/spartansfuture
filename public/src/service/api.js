@@ -1,4 +1,4 @@
-const API_BASE = 'https://ygqt4vowg9.execute-api.us-east-2.amazonaws.com/default/spartansfuture-backend'; // Local development
+const API_BASE = process.env.REACT_APP_API_BASE || 'https://ygqt4vowg9.execute-api.us-east-2.amazonaws.com/default/spartansfuture-backend'; // Fallback for development
 
 async function fetchAPI(endpoint, method = 'GET', body = null) {
   const options = {
