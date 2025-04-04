@@ -11,8 +11,14 @@ const PORT = process.env.PORT || 5000;
 
 // Enhanced CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:5500','https://master.d1duu1f2pzh2ks.amplifyapp.com/'], // Add your frontend origins
-  credentials: true
+  origin: [
+    'http://localhost:3000', 
+    'http://127.0.0.1:5500',
+    'https://*.amplifyapp.com'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
