@@ -127,55 +127,87 @@
    </form>
 
    <script>
+    const BASE_URL = 'https://spartansfuture-api.shahidbasheer.me';
 
-  async function handleLogin(event) {
-    event.preventDefault();
-
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    console.log("Username (input):", username);
-    console.log("Password (input):", password);
-
-    if (!username || !password) {
-        alert('Both username and password are required.');
-        return;
-    }
-
-    const loginData = { username, password };
-
-    try {
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(loginData),
-        });
-
-        const responseData = await response.json();
-        console.log("Server Response:", responseData);
-
-        if (response.ok) {
-            alert(responseData.message);
-            window.location.href = '/student.html';
-        } else {
-            alert(`Error: ${responseData.message}`);
+    async function handleLogin(event) {
+        event.preventDefault(); // Prevent form refresh
+    
+        // Fetch email and password correctly
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+    
+        console.log("Email (input):", email);
+        console.log("Password (input):", password);
+    
+        if (!email || !password) {
+            alert('Both email and password are required.');
+            return;
         }
-    } catch (error) {
-        console.error("Login error:", error);
-        alert("An error occurred. Please try again.");
+    
+        const loginData = { email, password };
+    
+        try {
+            const response = await fetch(`${BASE_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loginData),
+            });
+    
+            const responseData = await response.json();
+            console.log("Server Response:", responseData);
+    
+            if (response.ok) {
+                // Store the token
+                localStorage.setItem('token', responseData.token);
+                alert(responseData.message);
+    
+                // Check user role from the response
+                if (responseData.role === 'mentor') {
+                    // Redirect mentor to the mentor dashboard
+                    window.location.href = 'mentor.html';
+                } else if (responseData.role === 'student') {
+                    // Redirect student to the student dashboard
+                    window.location.href = `student.html`;
+                } else {
+                    alert('Unknown role detected.');
+                }
+            } else {
+                alert(`Error: ${responseData.message}`);
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            alert("An error occurred. Please try again.");
+        }
     }
-  }
+
+    async function forgotPassword() {
+        const email = prompt("Enter your registered email address:");
+        if (!email) {
+            alert("Email is required to reset your password.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            const responseData = await response.json();
+            alert(responseData.message);
+        } catch (error) {
+            console.error("Forgot Password error:", error);
+            alert("An error occurred while processing your request. Please try again.");
+        }
+    }
 
     function redirectToRegistration() {
-        window.location.href = 'signup.html';
-    }
-
-    function forgotPassword() {
-        alert('Forgot password functionality is under development.');
+        window.location.href = "signup.html";
     }
 
     function continueAsGuest() {
-        window.location.href = 'home.html';
+        window.location.href = "home.html";
     }
    </script>
 
