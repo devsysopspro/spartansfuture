@@ -1,16 +1,11 @@
 version: 1
-backend:
-  phases:
-    build:
-      commands:
-        - cd public
-        - npm install
-  artifacts:
-    baseDirectory: public
-    files:
-      - 'src/**/*'
-      - 'package.json'
-      - 'package-lock.json'
-  cache:
-    paths:
-      - public/node_modules/**/* 
+frontend:
+    phases:
+        build:
+            commands: []
+    artifacts:
+        baseDirectory: /public
+        files:
+            - '**/*'
+    cache:
+        paths: []
