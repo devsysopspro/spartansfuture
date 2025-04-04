@@ -11,14 +11,12 @@ const PORT = process.env.PORT || 5000;
 
 // Enhanced CORS configuration
 app.use(cors({
-  origin: [
-    'http://localhost:3000', 
-    'http://127.0.0.1:5500',
-    'https://*.amplifyapp.com'
-  ],
+  origin: true,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Referer', 'User-Agent', 'sec-ch-ua', 'sec-ch-ua-mobile', 'sec-ch-ua-platform'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 86400
 }));
 
 app.use(express.json());
