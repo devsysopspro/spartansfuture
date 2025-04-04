@@ -147,115 +147,117 @@
     </div>
 
     <script>
-  async function handleSignUp(event) {
-    event.preventDefault();
-    console.log("Signup form submitted");
+        const BASE_URL = 'http://18.118.116.43:5000';
 
-    const submitBtn = event.target.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Signing Up...';
+        async function handleSignUp(event) {
+            event.preventDefault();
+            console.log("Signup form submitted");
 
-    try {
-        // First try with simple JSON
-        const formData = {
-            role: document.getElementById('role').value,
-            name: document.getElementById('name').value,
-            username: document.getElementById('username').value,
-            email: document.getElementById('email').value,
-            cashtag: document.getElementById('cashtag').value,
-            interests: document.getElementById('interests').value,
-            password: document.getElementById('password').value
-        };
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing Up...';
 
-        const response = await fetch('https://ygqt4vowg9.execute-api.us-east-2.amazonaws.com/default/spartansfuture-backend/api/auth/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
+            try {
+                // First try with simple JSON
+                const formData = {
+                    role: document.getElementById('role').value,
+                    name: document.getElementById('name').value,
+                    username: document.getElementById('username').value,
+                    email: document.getElementById('email').value,
+                    cashtag: document.getElementById('cashtag').value,
+                    interests: document.getElementById('interests').value,
+                    password: document.getElementById('password').value
+                };
 
-        console.log("Response status:", response.status);
-        
-        const data = await response.json();
-        console.log("Response data:", data);
+                const response = await fetch(`${BASE_URL}/api/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-        if (!response.ok) {
-            if (data.field && data.message) {
-                const fieldElement = document.getElementById(data.field);
-                if (fieldElement) {
-                    fieldElement.focus();
-                    fieldElement.style.borderColor = 'red';
+                console.log("Response status:", response.status);
+                
+                const data = await response.json();
+                console.log("Response data:", data);
+
+                if (!response.ok) {
+                    if (data.field && data.message) {
+                        const fieldElement = document.getElementById(data.field);
+                        if (fieldElement) {
+                            fieldElement.focus();
+                            fieldElement.style.borderColor = 'red';
+                        }
+                        throw new Error(data.message);
+                    }
+                    throw new Error(data.message || 'Registration failed with status ' + response.status);
                 }
-                throw new Error(data.message);
+
+                alert('Registration successful! You will be redirected to login.');
+                window.location.href = 'login.html';
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                
+                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                    alert('Network error: Could not connect to the server. Please check your internet connection and try again.');
+                } else {
+                    alert(`Error: ${error.message}\n\nPlease check your information and try again.`);
+                    
+                    if (error.message.includes('email')) {
+                        document.getElementById('email').style.borderColor = 'red';
+                    }
+                    if (error.message.includes('username')) {
+                        document.getElementById('username').style.borderColor = 'red';
+                    }
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign Up';
             }
-            throw new Error(data.message || 'Registration failed with status ' + response.status);
         }
 
-        alert('Registration successful! You will be redirected to login.');
-        window.location.href = 'login.html';
+        function previewProfilePicture(input) {
+            const preview = document.getElementById('profilePicturePreview');
+            const file = input.files[0];
         
-    } catch (error) {
-        console.error('Registration error:', error);
-        
-        if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-            alert('Network error: Could not connect to the server. Please check your internet connection and try again.');
-        } else {
-            alert(`Error: ${error.message}\n\nPlease check your information and try again.`);
+            if (file) {
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPEG, PNG, or GIF)');
+                    input.value = '';
+                    preview.style.display = 'none';
+                    return;
+                }
             
-            if (error.message.includes('email')) {
-                document.getElementById('email').style.borderColor = 'red';
-            }
-            if (error.message.includes('username')) {
-                document.getElementById('username').style.borderColor = 'red';
+                // Validate file size (e.g., 2MB max)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Image must be less than 2MB');
+                    input.value = '';
+                    preview.style.display = 'none';
+                    return;
+                }
+            
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "#";
+                preview.style.display = 'none';
             }
         }
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Sign Up';
-    }
-}
 
-    function previewProfilePicture(input) {
-        const preview = document.getElementById('profilePicturePreview');
-        const file = input.files[0];
-    
-        if (file) {
-            // Validate file type
-            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            if (!validTypes.includes(file.type)) {
-                alert('Please select a valid image file (JPEG, PNG, or GIF)');
-                input.value = '';
-                preview.style.display = 'none';
-                return;
-            }
-        
-            // Validate file size (e.g., 2MB max)
-            if (file.size > 2 * 1024 * 1024) {
-                alert('Image must be less than 2MB');
-                input.value = '';
-                preview.style.display = 'none';
-                return;
-            }
-        
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = "#";
-            preview.style.display = 'none';
-        }
-    }
-
-    // Add input event listeners to remove error highlighting when user types
-    document.querySelectorAll('input, select').forEach(input => {
-        input.addEventListener('input', () => {
-            input.style.borderColor = '#ccc'; // Reset to default
+        // Add input event listeners to remove error highlighting when user types
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', () => {
+                input.style.borderColor = '#ccc'; // Reset to default
+            });
         });
-    });
     </script>
 </body>
 </html>

@@ -1,17 +1,16 @@
 version: 1
-frontend:
+backend:
   phases:
-    preBuild:
+    build:
       commands:
         - cd public
         - npm install
-    build:
-      commands:
-        - npm run build
   artifacts:
-    baseDirectory: public/build
+    baseDirectory: public
     files:
-      - '**/*'
+      - 'src/**/*'
+      - 'package.json'
+      - 'package-lock.json'
   cache:
     paths:
       - public/node_modules/**/* 
