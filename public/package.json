@@ -1,7 +1,18 @@
-"scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "test": "react-scripts test",
-  "eject": "react-scripts eject",
-  "start:prod": "serve -s build -l 3000"
+{
+  "name": "spartans-future",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build", 
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "start:prod": "serve -s build -l 3000"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "react-scripts": "^4.0.3",
+    "serve": "^11.3.2"
+  },
+  "devDependencies": {
+    "@aws-amplify/cli": "^4.41.2"
+  }
 }
