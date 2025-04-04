@@ -132,19 +132,19 @@
     async function handleLogin(event) {
         event.preventDefault(); // Prevent form refresh
     
-        // Fetch email and password correctly
-        const email = document.getElementById('email').value.trim();
+        // Fetch username and password correctly
+        const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value.trim();
     
-        console.log("Email (input):", email);
+        console.log("Username (input):", username);
         console.log("Password (input):", password);
     
-        if (!email || !password) {
-            alert('Both email and password are required.');
+        if (!username || !password) {
+            alert('Both username and password are required.');
             return;
         }
     
-        const loginData = { email, password };
+        const loginData = { username, password };
     
         try {
             const response = await fetch(`${BASE_URL}/api/auth/login`, {
