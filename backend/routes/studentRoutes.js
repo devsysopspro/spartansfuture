@@ -1,3 +1,8 @@
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+
+
 router.get('/students', async (req, res) => {
     console.log("Received request for students"); // Check if this appears in terminal
     try {
@@ -12,5 +17,6 @@ router.get('/students', async (req, res) => {
       console.error('Error fetching students:', error);
       res.status(500).json({ error: 'Failed to fetch students' });
     }
-  });
+});
   
+module.exports = router;

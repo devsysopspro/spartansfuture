@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 
 // Enhanced CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:5500'], // Add your frontend origins
+  origin: ['http://localhost:3000', 'http://127.0.0.1:5500','https://master.d1duu1f2pzh2ks.amplifyapp.com/'], // Add your frontend origins
   credentials: true
 }));
 
@@ -44,6 +44,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message || 'Internal Server Error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', (err) => {
+  if (err) {
+    console.error('Error starting server:', err);
+    process.exit(1);
+  }
 });
